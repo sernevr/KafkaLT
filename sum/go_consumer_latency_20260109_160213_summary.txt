@@ -1,0 +1,23 @@
+
++----------------------------------+------------------+
+|     CONSUMER SUMMARY (Go)        |                  |
++----------------------------------+------------------+
+| Date                             | 2026-01-09       |
+| Time                             | 16:02:51         |
+| Brokers                          | b-1-public.demo.fqp91t.c5.kafka.eu-central-1.amazonaws.com:9196,b-2-public.demo.fqp91t.c5.kafka.eu-central-1.amazonaws.com:9196,b-3-public.demo.fqp91t.c5.kafka.eu-central-1.amazonaws.com:9196 |
+| Total Messages Consumed          | 20               |
+| Total Time                       | 37.982s          |
++----------------------------------+------------------+
+|       TOTAL LATENCY (ms)         |                  |
++----------------------------------+------------------+
+| Min Total Latency                |          132.000 |
+| Max Total Latency                |         3151.000 |
+| Avg Total Latency                |          524.950 |
+| P50 Total Latency (Median)       |          189.000 |
+| P90 Total Latency                |         2174.000 |
+| P95 Total Latency                |         3151.000 |
+| P99 Total Latency                |         3151.000 |
++----------------------------------+------------------+
+| CSV Log File                     | log/go_consumer_latency_20260109_160213.csv |
+| Summary File                     | sum/go_consumer_latency_20260109_160213_summary.txt |
++----------------------------------+------------------+

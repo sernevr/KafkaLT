@@ -1,0 +1,23 @@
+
++----------------------------------+------------------+
+|     PRODUCER SUMMARY (Go)        |                  |
++----------------------------------+------------------+
+| Date                             | 2026-01-09       |
+| Time                             | 16:02:53         |
+| Brokers                          | b-1-public.demo.fqp91t.c5.kafka.eu-central-1.amazonaws.com:9196,b-2-public.demo.fqp91t.c5.kafka.eu-central-1.amazonaws.com:9196,b-3-public.demo.fqp91t.c5.kafka.eu-central-1.amazonaws.com:9196 |
+| Total Messages Sent              | 21               |
+| Total Time                       | 38.994s          |
++----------------------------------+------------------+
+|        LATENCY METRICS (ms)      |                  |
++----------------------------------+------------------+
+| Min Latency                      |          104.904 |
+| Max Latency                      |         1353.293 |
+| Avg Latency                      |          266.304 |
+| P50 Latency (Median)             |          125.267 |
+| P90 Latency                      |          937.426 |
+| P95 Latency                      |         1090.324 |
+| P99 Latency                      |         1353.293 |
++----------------------------------+------------------+
+| CSV Log File                     | log/go_producer_latency_20260109_160214.csv |
+| Summary File                     | sum/go_producer_latency_20260109_160214_summary.txt |
++----------------------------------+------------------+
