@@ -5,7 +5,6 @@
 # Features: Parallel consumption, Low-latency client configuration, MSK optimized
 
 # Default configuration
-DEFAULT_BROKERS="b-1-public.demo.fqp91t.c5.kafka.eu-central-1.amazonaws.com:9196,b-2-public.demo.fqp91t.c5.kafka.eu-central-1.amazonaws.com:9196,b-3-public.demo.fqp91t.c5.kafka.eu-central-1.amazonaws.com:9196"
 DEFAULT_COUNT=1000
 DEFAULT_TOPIC="clickstream-latency-test"
 DEFAULT_TIMEOUT=10
@@ -14,7 +13,7 @@ DEFAULT_SASL_MECHANISM="PLAIN"
 DEFAULT_SECRET_NAME="AmazonMSK_Manager"
 
 # Initialize with defaults
-BROKERS="$DEFAULT_BROKERS"
+BROKERS=""
 COUNT="$DEFAULT_COUNT"
 TOPIC="$DEFAULT_TOPIC"
 TIMEOUT="$DEFAULT_TIMEOUT"
@@ -27,7 +26,7 @@ USE_SCRAM=false
 
 # Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BINARY="$SCRIPT_DIR/kafka-latency-test"
+BINARY="$SCRIPT_DIR/out/kafkalt"
 
 # Colors for output
 RED='\033[0;31m'
@@ -40,8 +39,8 @@ usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options:"
-    echo "  -b, --brokers BROKERS    Comma-separated list of Kafka brokers"
-    echo "                           (default: AWS MSK brokers)"
+    echo "  -b, --brokers BROKERS    Comma-separated list of Kafka brokers (required)"
+    echo "                           Format: hostname:port or host1:port1,host2:port2"
     echo "  -c, --count COUNT        Number of messages to produce (default: 1000)"
     echo "  -t, --topic TOPIC        Kafka topic name (default: clickstream-latency-test)"
     echo "  -T, --timeout SECONDS    Connection timeout per broker (default: 10)"
@@ -56,7 +55,7 @@ usage() {
     echo "  -h, --help               Show this help message"
     echo ""
     echo "Examples:"
-    echo "  $0"
+    echo "  $0 -b localhost:9092"
     echo "  $0 -b localhost:9092 -c 100"
     echo "  $0 -b broker1:9092,broker2:9092 -c 500 -t my-topic"
     echo "  $0 --brokers localhost:9092 --count 100 --topic test-topic"
@@ -121,10 +120,19 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Check if brokers is provided
+if [[ -z "$BROKERS" ]]; then
+    echo -e "${RED}ERROR: Brokers is required${NC}"
+    echo "Use -b or --brokers to specify Kafka brokers"
+    echo "Example: $0 -b hostname:port"
+    echo "         $0 -b host1:port1,host2:port2"
+    exit 1
+fi
+
 # Check if binary exists
 if [[ ! -x "$BINARY" ]]; then
     echo -e "${RED}ERROR: kafka-latency-test binary not found at $BINARY${NC}"
-    echo "Please build it first: go build -o kafka-latency-test main.go"
+    echo "Please build it first: go build -o out/kafkalt main.go"
     exit 1
 fi
 

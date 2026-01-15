@@ -49,7 +49,7 @@ type ClickstreamEvent struct {
 
 // Configuration
 var (
-	kafkaBrokers  = flag.String("brokers", "localhost:9092", "Comma-separated list of Kafka brokers")
+	kafkaBrokers  = flag.String("brokers", "", "Comma-separated list of Kafka brokers (required)")
 	topic         = flag.String("topic", "clickstream-latency-test", "Kafka topic name")
 	mode          = flag.String("mode", "", "Mode: 'producer' or 'consumer'")
 	messageCount  = flag.Int("count", 1000, "Number of messages to produce")
@@ -78,6 +78,10 @@ func main() {
 
 	if *mode == "" {
 		log.Fatal("Mode is required. Use -mode=producer or -mode=consumer")
+	}
+
+	if *kafkaBrokers == "" {
+		log.Fatal("Brokers is required. Use -brokers=hostname:port or -brokers=host1:port1,host2:port2")
 	}
 
 	switch strings.ToLower(*mode) {

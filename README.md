@@ -16,7 +16,7 @@ This tool generates simulated clickstream events and measures various latency co
 
 ```
 go mod tidy
-go build -o kafka-latency-test main.go
+go build -o out/kafkalt main.go
 ```
 
 ## Usage
@@ -26,7 +26,7 @@ go build -o kafka-latency-test main.go
 Produces simulated clickstream events to a Kafka topic and measures producer-side latencies.
 
 ```
-./kafka-latency-test -mode=producer -brokers=localhost:9092 -topic=clickstream-latency-test -count=100
+./out/kafkalt -mode=producer -brokers=localhost:9092 -topic=clickstream-latency-test -count=100
 ```
 
 ### Consumer Mode
@@ -34,7 +34,7 @@ Produces simulated clickstream events to a Kafka topic and measures producer-sid
 Consumes messages from a Kafka topic and measures consumer-side and end-to-end latencies.
 
 ```
-./kafka-latency-test -mode=consumer -brokers=localhost:9092 -topic=clickstream-latency-test
+./out/kafkalt -mode=consumer -brokers=localhost:9092 -topic=clickstream-latency-test
 ```
 
 ## Command Line Options
@@ -42,7 +42,7 @@ Consumes messages from a Kafka topic and measures consumer-side and end-to-end l
 | Option | Default | Description |
 |--------|---------|-------------|
 | `-mode` | (required) | Operating mode: `producer` or `consumer` |
-| `-brokers` | `localhost:9092` | Comma-separated list of Kafka broker addresses |
+| `-brokers` | (required) | Comma-separated list of Kafka broker addresses (hostname:port) |
 | `-topic` | `clickstream-latency-test` | Kafka topic name |
 | `-count` | `1000` | Number of messages to produce (producer mode only) |
 | `-sasl-mechanism` | `PLAIN` | SASL mechanism: `SCRAM-SHA-256` or `SCRAM-SHA-512` |
@@ -57,10 +57,10 @@ The tool supports optional TLS encryption for secure communication with Kafka br
 
 ```
 # Enable TLS
-./kafka-latency-test -mode=producer -brokers=broker:9093 -tls
+./out/kafkalt -mode=producer -brokers=broker:9093 -tls
 
 # Enable TLS and skip certificate verification (for self-signed certs)
-./kafka-latency-test -mode=producer -brokers=broker:9093 -tls -tls-skip-verify
+./out/kafkalt -mode=producer -brokers=broker:9093 -tls -tls-skip-verify
 ```
 
 ### Notes
@@ -156,7 +156,7 @@ The `run-test.sh` script provides an automated way to run both producer and cons
 
 | Option | Long Form | Default | Description |
 |--------|-----------|---------|-------------|
-| `-b` | `--brokers` | AWS MSK brokers | Comma-separated list of Kafka brokers |
+| `-b` | `--brokers` | (required) | Comma-separated list of Kafka brokers (hostname:port) |
 | `-c` | `--count` | 1000 | Number of messages to produce |
 | `-t` | `--topic` | clickstream-latency-test | Kafka topic name |
 | `-T` | `--timeout` | 10 | Connection timeout in seconds per broker |
@@ -171,8 +171,8 @@ The `run-test.sh` script provides an automated way to run both producer and cons
 ### Examples
 
 ```
-# Run with defaults (AWS MSK brokers, 1000 messages)
-./run-test.sh
+# Run with local Kafka (1000 messages default)
+./run-test.sh -b localhost:9092
 
 # Run with local Kafka and 100 messages
 ./run-test.sh -b localhost:9092 -c 100
@@ -231,7 +231,8 @@ The `run-test.sh` script provides an automated way to run both producer and cons
 ├── sum/                          # Summary text files
 │   ├── go_producer_latency_YYYYMMDD_HHMMSS_summary.txt
 │   └── go_consumer_latency_YYYYMMDD_HHMMSS_summary.txt
-├── kafka-latency-test            # Compiled binary
+├── out/
+│   └── kafkalt                   # Compiled binary
 └── run-test.sh                   # Test runner script
 ```
 
@@ -484,33 +485,33 @@ Upon shutdown, the tool will:
 
 ```
 # Produce 50 messages to local Kafka
-./kafka-latency-test -mode=producer -count=50
+./out/kafkalt -mode=producer -brokers=localhost:9092 -count=50
 ```
 
 ### Remote Broker Test
 
 ```
 # Connect to remote Kafka cluster
-./kafka-latency-test -mode=producer -brokers=kafka1.example.com:9092,kafka2.example.com:9092 -topic=test-topic -count=100
+./out/kafkalt -mode=producer -brokers=kafka1.example.com:9092,kafka2.example.com:9092 -topic=test-topic -count=100
 ```
 
 ### Consumer with Custom Topic
 
 ```
 # Consume from a specific topic
-./kafka-latency-test -mode=consumer -brokers=localhost:9092 -topic=my-custom-topic
+./out/kafkalt -mode=consumer -brokers=hostname:9092 -topic=my-custom-topic
 ```
 
 ### Full Latency Test (Two Terminals)
 
 Terminal 1 (Consumer):
 ```
-./kafka-latency-test -mode=consumer -topic=latency-test
+./out/kafkalt -mode=consumer -brokers=localhost:9092 -topic=latency-test
 ```
 
 Terminal 2 (Producer):
 ```
-./kafka-latency-test -mode=producer -topic=latency-test -count=100
+./out/kafkalt -mode=producer -brokers=localhost:9092 -topic=latency-test -count=100
 ```
 
 ## Latency Calculation Notes
